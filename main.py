@@ -82,7 +82,7 @@ def check_next_move(hs300_price, sz50_price):
 
 def display(name, open_price, close_price, current_price):
     percent = (current_price - close_price) / close_price * 100
-    msg = Back.LIGHTWHITE_EX + "{} 开盘价格: {} 现价: {} 涨跌幅: {}%".format(name, open_price, current_price, round(percent, 2))
+    msg = Back.LIGHTWHITE_EX + "{:8s} 开盘价格: {} 现价: {} 涨跌幅: {:2.2f}%".format(name, open_price, current_price, percent)
     if percent < 0:
         msg = Fore.GREEN + msg
     else:
