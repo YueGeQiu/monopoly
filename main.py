@@ -21,6 +21,9 @@ HS300_SELLING_POINT = 4500
 SZ50_HOLDING_POINT = 3000
 SZ50_SELLING_POINT = 3500
 
+EMOJI_UP = '📈'
+EMOJI_DOWN = '📉'
+
 PORTION_EACH_TIME = [0.1, 0.2, 0.4, 0.3]
 
 if not TOKEN:
@@ -83,11 +86,12 @@ def check_next_move(hs300_price, sz50_price):
 
 def _display(name, open_price, close_price, current_price):
     percent = (current_price - close_price) / close_price * 100
-    msg = Back.LIGHTWHITE_EX + "{:8s} 开盘价格: {} 现价: {} 涨跌幅: {:2.2f}%".format(name, open_price, current_price, percent)
+    msg = Back.LIGHTWHITE_EX + "{:8s} 开盘价格: {:6.4f} 现价: {:6.4f} 涨跌幅: {:2.2f}%" \
+        .format(name, open_price, current_price, percent)
     if percent < 0:
-        msg = Fore.GREEN + msg
+        msg = Fore.GREEN + EMOJI_DOWN + ' ' + msg
     else:
-        msg = Fore.RED + msg
+        msg = Fore.RED + EMOJI_DOWN + ' ' + msg
     print(msg)
 
 
@@ -126,6 +130,7 @@ def make_decision(hs300: Index, sz50: Index):
                                                                             calc_amount(MONEY_EACH_MONTH, count),
                                                                             MONEY_EACH_MONTH))
     else:
+        print(hs300.current - hs300.open)
         check_next_move(hs300.current, sz50.current)
 
 
