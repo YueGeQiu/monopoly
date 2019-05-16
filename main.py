@@ -91,7 +91,7 @@ def _display(name, open_price, close_price, current_price):
     if percent < 0:
         msg = Fore.GREEN + EMOJI_DOWN + ' ' + msg
     else:
-        msg = Fore.RED + EMOJI_DOWN + ' ' + msg
+        msg = Fore.RED + EMOJI_UP + ' ' + msg
     print(msg)
 
 
