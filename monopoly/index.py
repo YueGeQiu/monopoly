@@ -39,4 +39,4 @@ class Index(object):
         self._display = display_func
 
     def display_info(self):
-        self.display(self.name, self.open, self.close, self.current)
+        return self.display(self.name, self.open, self.close, self.current)

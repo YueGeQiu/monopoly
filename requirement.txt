@@ -1,2 +1,4 @@
 tushare
 colorama
+requests
+flask

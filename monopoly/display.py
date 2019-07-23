@@ -19,3 +19,13 @@ def display_shell(name, open_price, close_price, current_price):
     else:
         msg = Fore.RED + EMOJI_UP + ' ' + msg
     print(msg)
+
+
+def display_text(name, open_price, close_price, current_price):
+    percent = (current_price - close_price) / close_price * 100
+    msg = "{:8s} 开盘价格: {:6.4f} 现价: {:6.4f} 涨跌幅: {:2.2f}%" .format(name, open_price, current_price, percent)
+    if percent < 0:
+        msg = EMOJI_DOWN + ' ' + msg
+    else:
+        msg = EMOJI_UP + ' ' + msg
+    return msg

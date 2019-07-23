@@ -7,9 +7,10 @@ from datetime import timedelta
 import tushare as ts
 from colorama import Fore
 
+from monopoly.display import display_text
 from monopoly.index import Index
 
-VERSION = 'v1.5'
+VERSION = 'v1.6'
 
 # 屁股带你赚大钱
 TOKEN = os.getenv('MONOPOLY_TOKEN', '')
@@ -74,45 +75,49 @@ def check_this_month(code=CODE_HS_300):
 
 
 def check_next_move(hs300_price, sz50_price):
+
     if hs300_price > HS300_SELLING_POINT or sz50_price > SZ50_SELLING_POINT:
-        print(Fore.RED + "建议卖出")
-        return
+        return "建议卖出"
 
     if hs300_price >= HS300_HOLDING_POINT or sz50_price >= SZ50_HOLDING_POINT:
-        print(Fore.YELLOW + "建议停止买入")
-        return
-    print(Fore.MAGENTA + "屁股说：「观望观望。」")
+        return "建议停止买入"
+
+    return "屁股说：「观望观望。」"
 
 
-def make_decision(hs300: Index, sz50: Index):
+def make_decision(hs300: Index, sz50: Index, amount):
     """ Make decision based on Index information
 
     :param hs300:
     :param sz50:
     :return:
     """
-    hs300.display_info()
-    sz50.display_info()
+    decision = {
+        'version': VERSION,
+        hs300.name: hs300.display_info(),
+        sz50.name: sz50.display_info()
+    }
 
+    message = ""
     if hs300.current < HS300_SELLING_POINT and hs300.current - hs300.open < 0:
-        print(Fore.GREEN + "-> 屁股说：「买特么的！」")
         # check this month only history data
         count = check_this_month(CODE_HS_300) + 1
-        print(Fore.GREEN + "-> 这是本月第 {} 次阴线, 投 ￥ {} / ￥ {}, 屁股带你赚大钱".format(count,
-                                                                            calc_amount(MONEY_EACH_MONTH, count),
-                                                                            MONEY_EACH_MONTH))
+        message = "屁股说：「买特么的！」-> 这是本月第 {} 次阴线, 投 ￥ {} / ￥ {}, 屁股带你赚大钱".format(count,
+                                                                              calc_amount(amount, count),
+                                                                              amount)
     else:
-        print(hs300.current - hs300.open)
-        check_next_move(hs300.current, sz50.current)
+        message = check_next_move(hs300.current, sz50.current)
+
+    decision['屁股怎么说'] = message
+    return decision
 
 
-if __name__ == '__main__':
-    if len(sys.argv) >= 2:
-        MONEY_EACH_MONTH = int(sys.argv[1])
-
+def check_for_app(amount=1000):
     try:
         hs300 = Index(CODE_HS_300)
+        hs300.display = display_text
         sz50 = Index(CODE_SZ_50)
-        make_decision(hs300, sz50)
+        sz50.display = display_text
+        return make_decision(hs300, sz50, amount)
     except Exception as e:
         print("喊屁股修代码啦: {}".format(e))
